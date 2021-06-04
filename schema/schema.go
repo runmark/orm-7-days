@@ -42,7 +42,7 @@ func Parse(origin interface{}, dialect dialect.Dialect) (schema *Schema) {
 
 			schema.FieldNames = append(schema.FieldNames, rfield.Name)
 
-			field := Field{}
+			field := &Field{}
 			field.Name = rfield.Name
 			//field.Type = dialect.DataTypeOf(reflect.New(rfield.Type).Elem())
 			field.Type = dialect.DataTypeOf(reflect.Indirect(reflect.New(rfield.Type)))
@@ -53,9 +53,9 @@ func Parse(origin interface{}, dialect dialect.Dialect) (schema *Schema) {
 				field.Tag = t
 			}
 
-			schema.Fields = append(schema.Fields, &field)
+			schema.Fields = append(schema.Fields, field)
 
-			schema.FieldMap[field.Name] = &field
+			schema.FieldMap[field.Name] = field
 		}
 
 	}

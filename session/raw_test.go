@@ -2,6 +2,7 @@ package session
 
 import (
 	"database/sql"
+	"example.com/mark/geeorm/dialect"
 	"os"
 	"testing"
 
@@ -10,10 +11,13 @@ import (
 
 var err error
 var TestDB *sql.DB
+var Dialect dialect.Dialect
 
 func TestMain(m *testing.M)  {
 
 	TestDB, _ = sql.Open("sqlite3", "../cmd_test/gee.db")
+
+	Dialect, _ = dialect.GetDialect("sqlite3")
 
 	code := m.Run()
 
@@ -22,8 +26,9 @@ func TestMain(m *testing.M)  {
 	os.Exit(code)
 }
 
+
 func TestSession_Exec(t *testing.T) {
-	s := New(TestDB)
+	s := New(TestDB, Dialect)
 	defer s.Clear()
 
 	_, _ = s.Raw("DROP TABLE IF EXISTS User;").Exec()
@@ -37,7 +42,7 @@ func TestSession_Exec(t *testing.T) {
 }
 
 func TestSession_QueryRow(t *testing.T) {
-	s := New(TestDB)
+	s := New(TestDB, Dialect)
 	defer s.Clear()
 
 	_, _ = s.Raw("DROP TABLE IF EXISTS User;").Exec()

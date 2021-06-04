@@ -13,7 +13,7 @@ type Person struct {
 
 func TestParse(t *testing.T) {
 	cases := []struct {
-		input       interface{}
+		input Person
 
 		oFieldNames []string
 		oFieldTypes []string
@@ -32,7 +32,7 @@ func TestParse(t *testing.T) {
 
 	for _, c := range cases {
 
-		s := Parse(c.input, d)
+		s := Parse(&c.input, d)
 
 		if !reflect.DeepEqual(s.FieldNames, c.oFieldNames) {
 			t.Errorf("expect %s, but got %s\n", c.oFieldNames, s.FieldNames)

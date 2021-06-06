@@ -6,9 +6,11 @@ import (
 )
 
 type User struct {
-	Id int
+	Id   int
 	Name string
 }
+
+type cov interface {}
 
 func TestValues_(t *testing.T) {
 
@@ -16,6 +18,20 @@ func TestValues_(t *testing.T) {
 		User{4, "John"},
 		User{5, "Amily"},
 	}
+	//input := [][](interface{}){
+	//	{User{4, "John"}},
+	//		{User{5, "Amily"}},
+	//}
+
+	//input := []User{
+	//	{4, "John"},{5, "Amily"},
+	//}
+
+	//inputConvt := []interface{}{}
+	//
+	//for _, inp := range input {
+	//	inputConvt = append(inputConvt, cov(inp))
+	//}
 
 	sql, vars := values_(input...)
 

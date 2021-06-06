@@ -2,7 +2,6 @@ package clause
 
 import (
 	"fmt"
-	"reflect"
 	"strings"
 )
 
@@ -51,12 +50,14 @@ func values_(values ...interface{}) (string, []interface{}) {
 
 	for i, value := range values {
 
-		// 使用 struct 传输 values
-		// 使用 slice 传输 values 时，需 uncomment 下面这条语句
-		//v := value.([]interface{})
+		// 使用 struct 传输 values 时，需 comment 该语句
+		// 使用 slice 传输 values 时，需 uncomment 该语句
+		v := value.([]interface{})
 
 		if bindStr == "" {
-			bindStr = genBindVars(reflect.TypeOf(value).NumField())
+			// 使用 struct 传输 values 时，需 uncomment 该语句
+			//bindStr = genBindVars(reflect.TypeOf(value).NumField())
+			bindStr = genBindVars(len(v))
 		}
 
 		sql.WriteString(fmt.Sprintf("(%v)", bindStr))
@@ -65,7 +66,7 @@ func values_(values ...interface{}) (string, []interface{}) {
 			sql.WriteString(",")
 		}
 
-		vars = append(vars, value)
+		vars = append(vars, v...)
 	}
 
 	return sql.String(), vars

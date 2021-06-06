@@ -27,7 +27,7 @@ func NewEngine(driver, source string) (e *Engine, err error){
 
 	dialect, ok := dialect.GetDialect(driver)
 	if !ok {
-		log.Error("dialect %v doesnt exists!", driver)
+		log.Errorf("dialect %s doesnt exists!", driver)
 		return
 	}
 

@@ -26,9 +26,12 @@ func TestMain(m *testing.M)  {
 	os.Exit(code)
 }
 
+func NewSession() *Session{
+	return New(TestDB, Dialect)
+}
 
 func TestSession_Exec(t *testing.T) {
-	s := New(TestDB, Dialect)
+	s := NewSession()
 	defer s.Clear()
 
 	_, _ = s.Raw("DROP TABLE IF EXISTS User;").Exec()
@@ -42,7 +45,7 @@ func TestSession_Exec(t *testing.T) {
 }
 
 func TestSession_QueryRow(t *testing.T) {
-	s := New(TestDB, Dialect)
+	s := NewSession()
 	defer s.Clear()
 
 	_, _ = s.Raw("DROP TABLE IF EXISTS User;").Exec()

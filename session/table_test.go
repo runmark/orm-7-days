@@ -10,7 +10,7 @@ type User struct {
 
 func TestSession_CreateTable(t *testing.T) {
 
-	s := New(TestDB, Dialect).Model(User{})
+	s := NewSession().Model(User{})
 	defer s.Clear()
 
 	_ = s.DropTable()

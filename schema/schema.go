@@ -6,12 +6,6 @@ import (
 	"reflect"
 )
 
-type Field struct {
-	Name string
-	Type string
-	Tag  string
-}
-
 type Schema struct {
 	Model      interface{}
 	Name       string
@@ -20,16 +14,22 @@ type Schema struct {
 	FieldMap   map[string]*Field
 }
 
+type Field struct {
+	Name string
+	Type string
+	Tag  string
+}
+
 func (s *Schema) GetField(name string) *Field {
 	return s.FieldMap[name]
 }
 
 func (s *Schema) RecordValues(origin interface{}) (fieldValues []interface{}) {
 
-	ov := reflect.Indirect(reflect.ValueOf(origin))
+	rov := reflect.Indirect(reflect.ValueOf(origin))
 
 	for _, name := range s.FieldNames {
-		fieldValues = append(fieldValues, ov.FieldByName(name).Interface())
+		fieldValues = append(fieldValues, rov.FieldByName(name).Interface())
 	}
 
 	return

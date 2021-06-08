@@ -5,6 +5,7 @@ import "testing"
 type User struct {
 	Id int `geeorm:"PRIMARY KEY"`
 	Name string
+	Age int
 }
 
 

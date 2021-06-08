@@ -1,6 +1,7 @@
 package clause
 
 import (
+	"example.com/mark/geeorm/log"
 	"fmt"
 	"strings"
 )
@@ -14,10 +15,15 @@ func init() {
 
 	generators[INSERT] = insert_
 	generators[VALUES] = values_
+
 	generators[SELECT] = select_
 	generators[LIMIT] = limit_
 	generators[WHERE] = where_
 	generators[ORDERBY] = orderby_
+
+	generators[UPDATE] = update_
+	generators[DELETE] = delete_
+	generators[COUNT] = count_
 }
 
 func genBindVars(num int) string {
@@ -79,21 +85,53 @@ func select_(values ...interface{}) (string, []interface{}) {
 	return fmt.Sprintf("SELECT %s FROM %s", fields, tableName), []interface{}{}
 }
 
-func limit_(values ...interface{}) (string, []interface{})  {
+func limit_(values ...interface{}) (string, []interface{}) {
 	// LIMIT $num
 	return "LIMIT ?", values
 }
 
-func where_(values ...interface{}) (string, []interface{})  {
+func where_(values ...interface{}) (string, []interface{}) {
 	// WHERE $conds
 	desc, vars := values[0], values[1:]
 	return fmt.Sprintf("WHERE %s", desc), vars
 }
 
-func orderby_(values ...interface{}) (string, []interface{})  {
+func orderby_(values ...interface{}) (string, []interface{}) {
 	// OEDERBY $fields
 	return fmt.Sprintf("ORDER BY %s", values[0]), []interface{}{}
 }
 
+func update_(values ...interface{}) (string, []interface{}) {
+	// UPDATE $tableName SET $field1=, $field2=...
+	tableName := values[0]
 
+	log.Infof("update_: values: %v", values)
 
+	var keys []string
+	var vars []interface{}
+
+	for k, v := range values[1].(map[string]interface{}) {
+		keys = append(keys, fmt.Sprintf("%s=?", k))
+		vars = append(vars, v)
+	}
+
+	log.Infof("update_: keys: %v, vars: %v\n", keys, vars)
+
+	sql := fmt.Sprintf("UPDATE %s SET %s", tableName, strings.Join(keys, ","))
+
+	log.Infof("update_: sql: %v, vars: %v\n", sql, vars)
+
+	return sql, vars
+}
+
+func delete_(values ...interface{}) (string, []interface{}) {
+	// DELETE FROM $tableName
+
+	return fmt.Sprintf("DELETE FROM %s", values[0]), []interface{}{}
+}
+
+func count_(values ...interface{}) (string, []interface{}) {
+	// SELECT count(*) FROM $tableName
+
+	return select_(values[0], []string{"count (*)"})
+}

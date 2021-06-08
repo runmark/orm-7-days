@@ -13,10 +13,11 @@ func (s *Session) Insert(values ...interface{}) (nums int64, err error) {
 
 	for _, value := range values {
 
+		s.CallMethod(BeforeInsert, value)
+
 		schema := s.Model(value).RefTable()
 		s.clause.Set(clause.INSERT, schema.Name, schema.FieldNames)
 		recordValues = append(recordValues, schema.RecordValues(value))
-
 	}
 
 	s.clause.Set(clause.VALUES, recordValues...)
@@ -31,6 +32,8 @@ func (s *Session) Insert(values ...interface{}) (nums int64, err error) {
 }
 
 func (session *Session) Find(values interface{}) error {
+
+	//session.CallMethod(BeforeQuery, nil)
 
 	rv := reflect.Indirect(reflect.ValueOf(values))
 	rte := rv.Type().Elem()
@@ -65,7 +68,11 @@ func (session *Session) Find(values interface{}) error {
 			return err
 		}
 
+		session.CallMethod(AfterQuery, rstruct.Addr().Interface())
+
 		rv.Set(reflect.Append(rv, rstruct))
+
+
 	}
 
 	return rows.Close()

@@ -13,7 +13,7 @@ func (s *Session) Insert(values ...interface{}) (nums int64, err error) {
 
 	for _, value := range values {
 
-		s.CallMethod(BeforeInsert, value)
+		//s.CallMethod(BeforeInsert, value)
 
 		schema := s.Model(value).RefTable()
 		s.clause.Set(clause.INSERT, schema.Name, schema.FieldNames)
@@ -68,7 +68,7 @@ func (session *Session) Find(values interface{}) error {
 			return err
 		}
 
-		session.CallMethod(AfterQuery, rstruct.Addr().Interface())
+		//session.CallMethod(AfterQuery, rstruct.Addr().Interface())
 
 		rv.Set(reflect.Append(rv, rstruct))
 
